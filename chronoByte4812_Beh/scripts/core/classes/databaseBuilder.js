@@ -1,9 +1,10 @@
-import { world, Vector3, Player } from "@minecraft/server";
+import { world, Player } from "@minecraft/server";
 import { config } from "../config.js";
 
 /**
  * A class to manage world and player dynamic properties
- * Sunday, 22 June 2025, 6:58 AM
+ * Sunday, 22 June 2025, 6:58 AM AEST
+ * Edited Thursday, 02 October 2025, 7:27 PM AEST
  */
 export class databaseBuilder {
     constructor() {

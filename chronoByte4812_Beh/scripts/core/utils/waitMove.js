@@ -7,8 +7,13 @@ import { Player, system, world } from "@minecraft/server";
  */
 export function waitMove(player, callbackWM) {
     const map = new Map();
+    const currentlyDebugMode = config.debugMode;
 
     map.set(player, [player.location.x, player.location.y, player.location.z]);
+
+    if (currentlyDebugMode) {
+        console.warn(`Player ${player.nameTag} is now awaiting movement waitMove()`);
+    };
 
     const runId = system.runInterval(() => {
         for (const [oldPlayer, [oldX, oldY, oldZ]] of map) {
@@ -18,7 +23,11 @@ export function waitMove(player, callbackWM) {
                 callbackWM();
                 map.delete(oldPlayer);
                 system.clearRun(runId);
+
+                if (currentlyDebugMode) {
+                    console.warn(`Player ${player.nameTag} has moved movement waitMove()`);
+                };
             };
         };
-    }, 5);
+    }, 4);
 };
