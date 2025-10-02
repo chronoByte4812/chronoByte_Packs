@@ -1,0 +1,54 @@
+{
+	"format_version": 2,
+	"header": {
+		"name": "chronoByte4812 Tests",
+		"description": "chronoByte4812 Tests",
+		"uuid": "7c26593f-7314-45f9-8534-b62ca9c753e1",
+		"version": [
+			1,
+			0,
+			0
+		],
+		"min_engine_version": [
+			1,
+			21,
+			111
+		]
+	},
+	"modules": [
+		{
+			"type": "data",
+			"uuid": "66e88975-33d0-43a1-8346-8e985b8331ba",
+			"version": [
+				1,
+				0,
+				0
+			]
+		},
+		{
+			"description": "Script Module",
+			"language": "javascript",
+			"type": "script",
+			"uuid": "80b30a3e-8e96-4878-b97c-e16e65bb6d61",
+			"version": [
+				1,
+				0,
+				0
+			],
+			"entry": "scripts/core/index.js"
+		}
+	],
+	"dependencies": [
+		{
+			"module_name": "@minecraft/server",
+			"version": "2.3.0-beta"
+		},
+		{
+			"module_name": "@minecraft/server-ui",
+			"version": "2.1.0-beta"
+		}
+	],
+	"capabilities": [
+		"script_eval"
+	]
+}
