@@ -1,4 +1,4 @@
-import { ActionFormData, ModalFormData } from '@minecraft/server-ui';
+import { ActionFormData, ModalFormData } from '@minecraft/server-ui'; // Wrapper to be written to simplify and makwGUI modular
 import { commandBuild } from '../../core/classes/commandBuilder.js';
 import { Database } from '../../core/classes/databaseBuilder.js';
 import { config } from '../../core/config.js';
