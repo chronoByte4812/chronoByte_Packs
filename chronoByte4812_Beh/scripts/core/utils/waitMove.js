@@ -1,18 +1,21 @@
-import { Player, system, world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
+import { config } from "../config";
+import { serverBuild } from "../classes/serverBuilder.js";
 
 /**
  * Execute a callback after a player moves
- * @param {Player} player 
- * @param {void} callbackWM 
+ * @param {import('@minecraft/server').Player} player 
+ * @param {function() => void} callbackWM
  */
 export function waitMove(player, callbackWM) {
     const map = new Map();
-    const currentlyDebugMode = config.debugMode;
+    const debugMode = config.debugMode;
 
     map.set(player, [player.location.x, player.location.y, player.location.z]);
 
-    if (currentlyDebugMode) {
+    if (debugMode) {
         console.warn(`Player ${player.nameTag} is now awaiting movement waitMove()`);
+        serverBuild.msgDevs(`Player ${player.nameTag} is now awaiting movement waitMove()`);
     };
 
     const runId = system.runInterval(() => {
@@ -24,8 +27,8 @@ export function waitMove(player, callbackWM) {
                 map.delete(oldPlayer);
                 system.clearRun(runId);
 
-                if (currentlyDebugMode) {
-                    console.warn(`Player ${player.nameTag} has moved movement waitMove()`);
+                if (debugMode) {
+                    console.warn(`Player ${player.nameTag} finished waitMove()`);
                 };
             };
         };
