@@ -1,1 +1,44 @@
-
+{
+  // Potenitally invalid in Minecraft.
+	"format_version": 2,
+	"header": {
+		"name": "chronoByte4812 Tests",
+		"description": "chronoByte4812 Tests",
+		"uuid": "",
+		"version": [
+			1,
+			0,
+			0
+		],
+		"min_engine_version": [
+			1,
+			21,
+			111
+		]
+	},
+	"modules": [
+		{
+      "description": "",
+			"type": "resources",
+			"uuid": "",
+			"version": [
+				1,
+				0,
+				0
+			]
+    }
+	],
+	"dependencies": [
+		{
+      "description": "",
+			"uuid": "",
+			"version": [
+        1,
+        0,
+        0
+    }
+	],
+	"capabilities": [
+		"script_eval"
+	]
+}
