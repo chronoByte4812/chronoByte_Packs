@@ -4,7 +4,7 @@
 	"header": {
 		"name": "chronoByte4812 Tests",
 		"description": "chronoByte4812 Tests",
-		"uuid": "",
+		"uuid": "1f1a7cce-3127-45d1-8334-622602843c45",
 		"version": [
 			1,
 			0,
@@ -18,7 +18,7 @@
 	},
 	"modules": [
 		{
-      "description": "",
+      "description": "4d84fe27-0e77-47cd-8d24-9a08cd168509",
 			"type": "resources",
 			"uuid": "",
 			"version": [
@@ -38,7 +38,5 @@
         0
     }
 	],
-	"capabilities": [
-		"script_eval"
-	]
+	"capabilities": [ ]
 }
