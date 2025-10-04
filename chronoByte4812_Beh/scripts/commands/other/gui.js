@@ -14,7 +14,7 @@ import { serverBuild } from '../../core/classes/serverBuilder.js';
  */
 
 /**
- * @type {Module[]} - A place to store all general modules
+ * @type {Module[]} A place to store modules
  * @example
  * {
         name: '',
@@ -36,15 +36,75 @@ export const generalModules = [
             '§aOn'
         ]
     },
-    {
-        name: 'Test Dropdown 1',
-        description: 'A test description of a generic module dropdown',
-        moduleId: 'testdropdown1',
+    // {
+    //     name: 'Test Dropdown 1',
+    //     description: 'A test description of a generic module dropdown',
+    //     moduleId: 'testdropdown1',
+    //     toggleValues: [
+    //         '§cOff',
+    //         'V1',
+    //         'V2'
+    //     ]
+    // }
+];
+
+/**
+ * @type {Module[]} A place to store self modules
+ * @example
+ * {
+        name: '',
+        description: '',
+        moduleId: '',
         toggleValues: [
             '§cOff',
-            'V1',
-            'V2'
+            '§aOn'
         ]
+    },
+ */
+
+export const selfModules = [
+    {
+        name: 'Something',
+        description: 'Something...',
+        moduleId: 'stdmodule',
+        toggleValues: [
+            '§cOff',
+            '§aOn'
+        ]
+    },
+    // {
+    //     name: 'Test Dropdown 1',
+    //     description: 'A test description of a generic module dropdown',
+    //     moduleId: 'testdropdown1',
+    //     toggleValues: [
+    //         '§cOff',
+    //         'V1',
+    //         'V2'
+    //     ]
+    // }
+];
+
+/**
+ * @typedef {Object} StatusTag
+ * @property {string} description - The description of the module
+ * @property {string} displayName - The name that is visible in the GUI
+ * @property {string} tagId - The global ID that is used by the Database
+ */
+
+/**
+ * Tags that are used to define what a player is
+ * @type {StatusTag[]}
+ */
+const statusTags = [
+    {
+        tagId: 'staffstatus',
+        description: 'Is the target a staff member?',
+        displayName: 'Staff status'
+    },
+    {
+        tagId: 'devstatus',
+        description: 'Is the target a dev?',
+        displayName: 'Dev status'
     }
 ];
 
@@ -56,18 +116,18 @@ export const generalModules = [
  */
 function setModule(sender, module, newValue) {
     try {
-        const oldValue = Database.get(`module:${module.moduleId}`);
+        const oldValue = Database.get(`module:${module.moduleId}`) ?? 0;
 
-        if (config.debugMode === true) {
+        if (config.debugMode && sender.hasTag('devstatus')) {
             console.warn(`${module.name}, newValue: ${newValue}, oldValue: ${oldValue}`);
         };
 
         if (oldValue !== newValue) {
-            world.sendMessage(`${sender.name} has set the module ${module.name} to ${module.toggleValues[newValue]}`);
+            serverBuild.msg(`${sender.name} has set the module ${module.name} to ${module.toggleValues[newValue]}`);
             Database.set(`module:${module.moduleId}`, newValue);
         };
     } catch (error) {
-        if (config.debugMode === true)
+        if (config.debugMode && sender.hasTag('devstatus'))
             console.error(`An error occurred while setting modules: ${error}\n${error.stack}`);
     };
 };
@@ -83,16 +143,16 @@ function setPlayerStatus(sender, target, tag, newValue) {
     try {
         const oldValue = target.hasTag(tag);
 
-        if (config.debugMode === true) {
+        if (config.debugMode && sender.hasTag('devstatus')) {
             console.warn(`Tag: ${tag}, newValue: ${newValue}, oldValue: ${oldValue}`);
         };
 
         if (oldValue !== newValue) {
-            world.sendMessage(`${sender.name} has set ${target.nameTag}'s ${tag} to ${newValue}`);
+            serverBuild.msg(`${sender.name} has set ${target.nameTag}'s ${tag} to ${newValue}`);
             newValue === true ? target.addTag(tag) : target.removeTag(tag);
         };
     } catch (error) {
-        if (config.debugMode === true)
+        if (config.debugMode && sender.hasTag('devstatus'))
             console.error(`An error occurred while setting player status: ${error}\n${error.stack}`);
     };
 };
@@ -104,7 +164,7 @@ export const gui = {
          * @param {import('@minecraft/server').Player} sender 
          */
         main: (sender) => {
-            const guiMainStaff = new ActionFormData()
+            const guiMainStaff = new ActionFormData();
             let text = [];
 
             guiMainStaff.title('Main staff GUI');
@@ -129,20 +189,23 @@ export const gui = {
          * @param {import('@minecraft/server').Player} sender 
          */
         modulesSelector: (sender) => {
-            const guiMainStaff = new ActionFormData()
+            const guiMainStaff = new ActionFormData();
             let text = [];
 
-            guiMainStaff.title('Modules selectro GUI');
+            guiMainStaff.title('Modules selector GUI');
 
             text.push('A');
 
             guiMainStaff.body(text.join('\n§r'));
-            guiMainStaff.button('General');
+            guiMainStaff.button('General Modules');
+            guiMainStaff.button('Self Modules');
             guiMainStaff.show(sender).then((result) => {
-                if (result.canceled) return;
+                if (result.canceled) return gui.staff.main(sender);
 
                 if (result.selection === 0)
                     return gui.staff.generalModules(sender);
+                else if (result.selection === 1)
+                    return gui.player.selfModules(sender);
             });
         },
 
@@ -157,11 +220,9 @@ export const gui = {
             statusManagerSelector.title('Status Manager');
             statusManagerSelector.dropdown('Select a target:', [...allPlayers.map((plr) => plr.name)], { defaultValueIndex: 0, tooltip: '' })
             statusManagerSelector.show(sender).then((result) => {
-                if (result.canceled) return;
+                if (result.canceled) return gui.staff.main(sender);
 
-                const target = allPlayers[Number(result.formValues[0])];
-
-                gui.staff.statusManager(sender, target);
+                gui.staff.statusManager(sender, allPlayers[Number(result.formValues[0])]);
             });
         },
 
@@ -170,19 +231,23 @@ export const gui = {
          * @param {import('@minecraft/server').Player} sender
          * @param {import('@minecraft/server').Player} target
          */
-        statusManager: (sender, target) => { // Make toggles dynamically generated with Array<Object> similar to generalModules later.
+        statusManager: (sender, target) => {
             const statusManager = new ModalFormData();
-            const targetIsStaff = target.hasTag(config.staffTag);
-            const targetIsDev = target.hasTag(config.devTag);
 
             statusManager.title('Status Manager Selector');
-            statusManager.toggle('Staff status', { defaultValue: targetIsStaff, tooltip: 'Is the target a staff member?' });
-            statusManager.toggle('Dev status', { defaultValue: targetIsDev, tooltip: 'Is the target a dev?' });
-            statusManager.show(sender).then((result) => {
-                if (result.canceled) return;
 
-                setPlayerStatus(sender, target, 'staffstatus', Boolean(result.formValues[0]));
-                setPlayerStatus(sender, target, 'devstatus', Boolean(result.formValues[1]));
+            statusTags.forEach((tag) => {
+                statusManager.toggle(tag.displayName, { defaultValue: target.hasTag(tag.tagId), tooltip: tag.description });
+            });
+
+            statusManager.show(sender).then((result) => {
+                if (result.canceled) return gui.staff.main(sender);
+
+                for (let i = 0; i < statusTags.length; i++) {
+                    setPlayerStatus(sender, target, statusTags[i].tagId, Boolean(result.formValues[i]));
+                };
+
+                return gui.staff.main(sender);
             });
         },
 
@@ -197,18 +262,18 @@ export const gui = {
 
             for (const module of generalModules) {
                 module.toggleValues.length === 2 ?
-                    guiModules.toggle(module.name, { tooltip: module.description, defaultValue: Boolean(Database.get(`module:${module.moduleId}`)) }) :
-                    guiModules.dropdown(module.name, module.toggleValues, { tooltip: module.description, defaultValueIndex: Database.get(`module:${module.moduleId}`) })
+                    guiModules.toggle(module.name, { tooltip: module.description, defaultValue: Boolean(Database.get(`module:${module.moduleId}`)) ?? false }) :
+                    guiModules.dropdown(module.name, module.toggleValues, { tooltip: module.description, defaultValueIndex: Database.get(`module:${module.moduleId}`) ?? 0 })
             };
 
             guiModules.show(sender).then((result) => {
-                if (result.canceled === true) return gui.staff.main(sender);
+                if (result.canceled) return gui.staff.main(sender);
 
                 for (let i = 0; i < generalModules.length; i++) {
-                    const currentModule = generalModules[i];
+                    setModule(sender, generalModules[i], Number(result.formValues[i]));
+                };
 
-                    setModule(sender, currentModule, result.formValues[i]);
-                }; gui.staff.main(sender);
+                gui.staff.main(sender);
             });
         }
     },
@@ -219,7 +284,7 @@ export const gui = {
          * @param {import('@minecraft/server').Player} sender 
          */
         main: (sender) => {
-            const guiMainPlayer = new ActionFormData()
+            const guiMainPlayer = new ActionFormData();
             let text = [];
 
             guiMainPlayer.title('Main player GUI');
@@ -227,37 +292,36 @@ export const gui = {
             text.push('A');
 
             guiMainPlayer.body(text.join('\n§r'));
-            guiMainPlayer.button('Test broken button');
+            guiMainPlayer.button('Self modules');
             guiMainPlayer.show(sender).then((result) => {
                 if (result.canceled) return;
 
                 if (result.selection === 0)
-                    return gui.player.main(sender);
+                    return gui.player.selfModules(sender);
             });
         },
 
         /**
          * - The player self modules UI
-         * @param {import('@minecraft/server').Player} sender 
+         * @param {import('@minecraft/server').Player} sender
          */
-        modules: (sender) => {
+        selfModules: (sender) => {
             const guiModules = new ModalFormData();
 
             guiModules.title('General Modules');
 
-            for (const module of generalModules) {
+            for (const module of selfModules) {
                 module.toggleValues.length === 2 ?
                     guiModules.toggle(module.name, { tooltip: module.description, defaultValue: Boolean(Database.get(`module:${module.moduleId}`)) }) :
                     guiModules.dropdown(module.name, module.toggleValues, { tooltip: module.description, defaultValueIndex: Database.get(`module:${module.moduleId}`) })
             };
 
             guiModules.show(sender).then((result) => {
-                if (result.canceled === true) return gui.staff.main(sender);
+                if (result.canceled) return gui.player.main(sender);
 
-                for (let i = 0; i < generalModules.length; i++) {
-                    const currentModule = generalModules[i];
+                for (let i = 0; i < selfModules.length; i++) {
 
-                    setModule(sender, currentModule, Number(result.formValues[i]));
+                    setModule(sender, selfModules[i], Number(result.formValues[i]));
                 }; gui.player.main(sender);
             });
         }
@@ -294,12 +358,12 @@ commandBuild.register(
 
         /**
          * Describes what menu to use.
-         * 0 = Welcome
-         * 1 = Staff
+         * 0 = Welcome,
+         * 1 = Staff,
          * 2 = Nonstaff
          * @type {Number}
          */
-        let uiType;
+        let uiType = 0;
 
         // Potential command toggle feature later.
         // if (Database.get(`module:icmtoggle`)) return sender.sendMessage(`Commands are disabled currently!`);
@@ -328,7 +392,7 @@ commandBuild.register(
                 break;
         };
 
-        if (config.debugMode) {
+        if (config.debugMode && sender.hasTag('devstatus')) {
             console.warn(`uiType: ${uiType}, sender: ${sender.nameTag}`);
             serverBuild.msgDevs(`uiType: ${uiType}, sender: ${sender.nameTag}`)
         }

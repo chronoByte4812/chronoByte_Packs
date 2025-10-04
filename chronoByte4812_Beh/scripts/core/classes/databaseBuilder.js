@@ -16,7 +16,7 @@ export class databaseBuilder {
      * @param {String} key 
      */
     get(key) {
-        if (config.debugMode === true) {
+        if (config.debugMode  && sender.hasTag('devstatus')) {
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in Database.get(). Got ${typeof key}`);
         };
 
@@ -31,7 +31,7 @@ export class databaseBuilder {
      * @param {boolean | number | string | Vector3} value 
      */
     set(key, value) {
-        if (config.debugMode === true) {
+        if (config.debugMode && sender.hasTag('devstatus')) {
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in Database.set(). Got ${typeof key}`);
         };
 
@@ -44,7 +44,7 @@ export class databaseBuilder {
      * @param {String} key
      */
     getPlayer(player, key) {
-        if (config.debugMode === true) {
+        if (config.debugMode && sender.hasTag('devstatus')) {
             if (!player) return console.warn(`Missing player param parsed in Database.getPlayer(). Got ${typeof player}`)
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in Database.getPlayer(). Got ${typeof key}`);
         };
@@ -61,7 +61,7 @@ export class databaseBuilder {
      * @param {boolean | number | string | Vector3} value
      */
     setPlayer(player, key, value) {
-        if (config.debugMode === true) {
+        if (config.debugMode && sender.hasTag('devstatus')) {
             if (!player) return console.warn(`Missing player param parsed in Database.setPlayer(). Got ${typeof player}`)
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in Database.setPlayer(). Got ${typeof key}`);
         };

@@ -5,7 +5,7 @@ import { config } from "../config.js";
 /**
  * A class for server functions and modules
  * Friday, 03 October 2025, 9:34 PM
- * Edited on ...
+ * Edited on 04 October 2025, 10:35 AM
  */
 class serverBuilder {
     constructor() {
@@ -36,7 +36,7 @@ class serverBuilder {
     };
 
     /**
-     * Send a message to all devs  in the world
+     * Send a message to all devs in the world
      * @param {String} message - The message to be sent to all staff members
      */
     msgDevs(message) {
@@ -47,6 +47,22 @@ class serverBuilder {
         };
 
         this.allDevs.forEach((player) => {
+            player.sendMessage(message);
+        });
+    };
+
+    /**
+     * Send a message to all players in the world
+     * @param {String} message - The message to be sent to all staff members
+     */
+    msg(message) {
+        if (this.debugMode) {
+            if (typeof message !== 'string') {
+                console.warn(`Invalid parameter parsed in msgDevs(). Got ${typeof message}`);
+            };
+        };
+
+        this.allPlayers.forEach((player) => {
             player.sendMessage(message);
         });
     };

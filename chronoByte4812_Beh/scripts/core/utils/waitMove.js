@@ -13,7 +13,7 @@ export function waitMove(player, callbackWM) {
 
     map.set(player, [player.location.x, player.location.y, player.location.z]);
 
-    if (debugMode) {
+    if (debugMode && player.hasTag('devstatus')) {
         console.warn(`Player ${player.nameTag} is now awaiting movement waitMove()`);
         serverBuild.msgDevs(`Player ${player.nameTag} is now awaiting movement waitMove()`);
     };
@@ -27,7 +27,7 @@ export function waitMove(player, callbackWM) {
                 map.delete(oldPlayer);
                 system.clearRun(runId);
 
-                if (debugMode) {
+                if (debugMode && player.hasTag('devstatus')) {
                     console.warn(`Player ${player.nameTag} finished waitMove()`);
                 };
             };

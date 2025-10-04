@@ -12,7 +12,7 @@ world.beforeEvents.chatSend.subscribe((data) => {
     const cmd = args.shift();
     const command = commandBuild.getCommand(cmd);
 
-    if (config.debugMode) {
+    if (config.debugMode && sender.hasTag('devstatus')) {
         console.warn(`Player ${sender.nameTag}, Cmd ${cmd} does ${command !== undefined ? '' : 'not '}exists, Args ${args.join(', ')}`);
     };
 

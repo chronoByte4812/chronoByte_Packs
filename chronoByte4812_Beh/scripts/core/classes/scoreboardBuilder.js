@@ -15,7 +15,7 @@ export class scoreboardBuilder {
      * @param {String} key 
      */
     get(key) {
-        if (config.debugMode === true) {
+        if (config.debugMode /* && sender.hasTag('devstatus')*/) {
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in scoreboardBuild.get(). Got ${typeof key}`);
         };
 
@@ -30,7 +30,7 @@ export class scoreboardBuilder {
      * @param {boolean | number | string | Vector3} value 
      */
     set(key, value) {
-        if (config.debugMode === true) {
+        if (config.debugMode /* && sender.hasTag('devstatus')*/) {
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in scoreboardBuild.set(). Got ${typeof key}`);
             if (typeof value !== 'string') return console.warn(`Invalid type parsed in scoreboardBuild.set(). Got ${typeof key}`);
         };
@@ -44,7 +44,7 @@ export class scoreboardBuilder {
      * @param {String} key
      */
     getPlayer(player, key) {
-        if (config.debugMode === true) {
+        if (config.debugMode /* && sender.hasTag('devstatus')*/) {
             if (!player) return console.warn(`Missing player param parsed in scoreboardBuild.getPlayer(). Got ${typeof player}`)
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in scoreboardBuild.getPlayer(). Got ${typeof key}`);
         };
@@ -61,7 +61,7 @@ export class scoreboardBuilder {
      * @param {boolean | number | string | Vector3} value
      */
     setPlayer(player, key, value) {
-        if (config.debugMode === true) {
+        if (config.debugMode /* && sender.hasTag('devstatus')*/) {
             if (!player) return console.warn(`Missing player param parsed in scoreboardBuild.setPlayer(). Got ${typeof player}`)
             if (typeof key !== 'string') return console.warn(`Invalid type parsed in scoreboardBuild.setPlayer(). Got ${typeof key}`);
         };
