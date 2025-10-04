@@ -1,5 +1,4 @@
 {
-  // Potenitally invalid in Minecraft.
 	"format_version": 2,
 	"header": {
 		"name": "chronoByte4812 Tests",
@@ -18,25 +17,25 @@
 	},
 	"modules": [
 		{
-      "description": "4d84fe27-0e77-47cd-8d24-9a08cd168509",
+			"description": "",
 			"type": "resources",
-			"uuid": "",
+			"uuid": "ae4817c3-2b24-4484-afdd-e6d09e739f97",
 			"version": [
 				1,
 				0,
 				0
 			]
-    }
+		}
 	],
 	"dependencies": [
 		{
-      "description": "",
 			"uuid": "7c26593f-7314-45f9-8534-b62ca9c753e1",
 			"version": [
-        1,
-        0,
-        0
-    }
+				1,
+				0,
+				0
+			]
+		}
 	],
-	"capabilities": [ ]
+	"capabilities": []
 }
