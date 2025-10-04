@@ -6,6 +6,20 @@ import { world } from '@minecraft/server';
 import { serverBuild } from '../../core/classes/serverBuilder.js';
 
 /**
+ * Conver the uiType variable to a string version
+ * @param {Number} uiType
+ * @returns {String}
+ */
+function uiTypeToString(uiType) {
+    if (uiType === 0)
+        return 'welcome';
+    else if (uiType === 1)
+        return 'staff';
+    else if (uiType === 2)
+        return 'nonstaff';
+};
+
+/**
  * @typedef {Object} Module
  * @property {string} name - The title name that will be displayed when referencing it
  * @property {string} description - The description of the module
@@ -118,8 +132,9 @@ function setModule(sender, module, newValue) {
     try {
         const oldValue = Database.get(`module:${module.moduleId}`) ?? 0;
 
-        if (config.debugMode && sender.hasTag('devstatus')) {
-            console.warn(`${module.name}, newValue: ${newValue}, oldValue: ${oldValue}`);
+        if (config.debugMode) {
+            // console.warn(`${module.name}, newValue: ${newValue}, oldValue: ${oldValue}`);
+            serverBuild.msgDevs(`${module.name}, newValue: ${newValue}, oldValue: ${oldValue}`);
         };
 
         if (oldValue !== newValue) {
@@ -127,7 +142,7 @@ function setModule(sender, module, newValue) {
             Database.set(`module:${module.moduleId}`, newValue);
         };
     } catch (error) {
-        if (config.debugMode && sender.hasTag('devstatus'))
+        if (config.debugMode)
             console.error(`An error occurred while setting modules: ${error}\n${error.stack}`);
     };
 };
@@ -143,8 +158,9 @@ function setPlayerStatus(sender, target, tag, newValue) {
     try {
         const oldValue = target.hasTag(tag);
 
-        if (config.debugMode && sender.hasTag('devstatus')) {
-            console.warn(`Tag: ${tag}, newValue: ${newValue}, oldValue: ${oldValue}`);
+        if (config.debugMode) {
+            // console.warn(`Tag: ${tag}, newValue: ${newValue}, oldValue: ${oldValue}`);
+            serverBuild.msgDevs(`Tag: ${tag}, newValue: ${newValue}, oldValue: ${oldValue}`);
         };
 
         if (oldValue !== newValue) {
@@ -152,7 +168,7 @@ function setPlayerStatus(sender, target, tag, newValue) {
             newValue === true ? target.addTag(tag) : target.removeTag(tag);
         };
     } catch (error) {
-        if (config.debugMode && sender.hasTag('devstatus'))
+        if (config.debugMode)
             console.error(`An error occurred while setting player status: ${error}\n${error.stack}`);
     };
 };
@@ -161,7 +177,7 @@ export const gui = {
     staff: {
         /**
          * - The main staff UI
-         * @param {import('@minecraft/server').Player} sender 
+         * @param {import('@minecraft/server').Player} sender
          */
         main: (sender) => {
             const guiMainStaff = new ActionFormData();
@@ -186,7 +202,7 @@ export const gui = {
 
         /**
          * - The modules type selection UI
-         * @param {import('@minecraft/server').Player} sender 
+         * @param {import('@minecraft/server').Player} sender
          */
         modulesSelector: (sender) => {
             const guiMainStaff = new ActionFormData();
@@ -281,7 +297,7 @@ export const gui = {
     player: {
         /**
          * - The main player UI
-         * @param {import('@minecraft/server').Player} sender 
+         * @param {import('@minecraft/server').Player} sender
          */
         main: (sender) => {
             const guiMainPlayer = new ActionFormData();
@@ -325,6 +341,31 @@ export const gui = {
                 }; gui.player.main(sender);
             });
         }
+    },
+    dev: {
+        /**
+         * - The dev staff UI
+         * @param {import('@minecraft/server').Player} sender
+         */
+        main: (sender) => {
+            const guiMainStaff = new ActionFormData();
+            let text = [];
+
+            guiMainStaff.title('Main dev GUI');
+
+            text.push('A');
+
+            guiMainStaff.body(text.join('\n§r'));
+            guiMainStaff.button('Testing123');
+            guiMainStaff.show(sender).then((result) => {
+                if (result.canceled) return;
+
+                if (result.selection === 0)
+                    return gui.staff.modulesSelector(sender);
+                else if (result.selection === 1)
+                    return gui.staff.statusManagerSelector(sender);
+            });
+        }
     }
 };
 
@@ -346,14 +387,14 @@ commandBuild.register(
         ]
     },
     (data, args) => {
-        const sender = data.sender;
+        const sender= data.sender;
 
         if (args[1]) sender.sendMessage('Hey you used a 2nd argument, cool!');
 
         sender.sendMessage('§aMove to show the UI!');
     },
     (data, args) => {
-        const sender = data.sender;
+        const sender= data.sender;
         const isStaff = sender.hasTag(config.staffTag);
 
         /**
@@ -392,9 +433,9 @@ commandBuild.register(
                 break;
         };
 
-        if (config.debugMode && sender.hasTag('devstatus')) {
-            console.warn(`uiType: ${uiType}, sender: ${sender.nameTag}`);
-            serverBuild.msgDevs(`uiType: ${uiType}, sender: ${sender.nameTag}`)
-        }
+        if (config.debugMode) {
+            // console.warn(`uiType: ${uiType}, sender: ${sender.nameTag}`);
+            serverBuild.msgDevs(`uiType: ${uiTypeToString(uiType)}, sender: ${sender.nameTag}`);
+        };
     }
 );

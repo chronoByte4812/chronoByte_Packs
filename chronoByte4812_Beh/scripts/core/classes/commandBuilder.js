@@ -1,3 +1,5 @@
+import { serverBuild } from './serverBuilder';
+
 /**
  * A class to manage server commands
  * 
@@ -42,7 +44,7 @@ class commandBuilder {
                 aliases: info.aliases || [],
                 examples: info.examples || [],
                 for_staff: info.for_staff || false,
-                callback: callback || (() => console.warn(`Command ${info.name} is missing it's callback function!`)),
+                callback: callback || (() => { /* console.warn(`Command ${info.name} is missing it's callback function!`); */ serverBuild.msgDevs(`Command ${info.name} is missing it's callback function!`) }),
                 callbackWM: callbackWM || (() => { })
             }
         );
@@ -68,7 +70,12 @@ class commandBuilder {
      * @param {String} cmdName - Name of the command
      */
     getCommand(cmdName) {
-        if (!cmdName) return console.warn('getCommand() parameter cmdName was not parsed');
+        if (!cmdName) {
+            // console.warn('getCommand() parameter cmdName was not parsed');
+            serverBuild.msgDevs('getCommand() parameter cmdName was not parsed');
+
+            return;
+        };
 
         const cmds = this.commands.find((cmd) => (cmd.name === cmdName || cmd.aliases.some((aliase) => cmdName === aliase)));
 

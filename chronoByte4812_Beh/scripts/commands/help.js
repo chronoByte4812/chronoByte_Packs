@@ -19,32 +19,39 @@ commandBuild.register(
     (data, args) => {
         const sender = data.sender;
         const isStaff = sender.hasTag(config.staffTag);
-        const allCommands = commandBuild.getAllCommands(isStaff);
+        let allCommands = [
+            ...commandBuild.getAllCommands(false),
+            ...(isStaff ? commandBuild.getAllCommands(true) : []),
+        ];
+
+
         let text = [];
 
         if (args.length < 1) {
-            text.push(`${config.msgPrefix}Command prefix: §c${config.prefix}`);
+            text.push(`Command prefix: §c${config.prefix}`);
 
             if (allCommands.length < 1)
-                text.push(`§8[§cNo ${isStaff ? 'staff' : 'player'} commands registered§8]`);
+                text.push(`§8[§cNo${isStaff ? '' : 'player'} commands are registered§8]`);
             else
-                text.push(`${config.msgPrefix}All commands available: §c${allCommands.map((cmd) => cmd.name).sort().join(', ')}`);
+                text.push(`All commands available: §c${allCommands.map((cmd) => cmd.name).sort().join(', ')}`);
         }
         else {
             const cmdInQuestion = commandBuild.getCommand(args[0]);
 
             if (cmdInQuestion) {
-                text.push(`${config.msgPrefix}Command name: §c${cmdInQuestion.name}`);
-                text.push(`${config.msgPrefix}Command description: §c${cmdInQuestion.description}`);
-                text.push(`${config.msgPrefix}Command usage: §c[ ${cmdInQuestion.usage.length < 1 ? 'none' : cmdInQuestion.usage.join(', ')} ]`);
-                text.push(`${config.msgPrefix}Command aliases: §c[ ${cmdInQuestion.aliases.length < 1 ? 'none' : cmdInQuestion.aliases.join(', ')} ]`);
-                text.push(`${config.msgPrefix}Command examples: §c[ ${cmdInQuestion.examples.length < 1 ? 'none' : cmdInQuestion.examples.join(', ')} ]`);
-                text.push(`${config.msgPrefix}Command for staff?: §c${cmdInQuestion.for_staff}`);
+                text.push(`Command name: §c${cmdInQuestion.name}`);
+                text.push(`Command description: §c${cmdInQuestion.description}`);
+                text.push(`Command usage: §c[ ${cmdInQuestion.usage.length < 1 ? 'none' : cmdInQuestion.usage.join(', ')} ]`);
+                text.push(`Command aliases: §c[ ${cmdInQuestion.aliases.length < 1 ? 'none' : cmdInQuestion.aliases.join(', ')} ]`);
+                text.push(`Command examples: §c[ ${cmdInQuestion.examples.length < 1 ? 'none' : cmdInQuestion.examples.join(', ')} ]`);
+                text.push(`Command for staff: §c${cmdInQuestion.for_staff ? 'Yes' : 'No'}`);
             }
             else {
-                text.push(`${config.msgPrefix}The command §c${args[0]}§d was not found`);
+                text.push(`The command §c${args[0]}§d was not found`);
             };
-        }; sender.sendMessage(text.join('§r\n'))
+        };
+
+        sender.sendMessage(text.join('§r\n'))
     },
     (data, args) => { }
 );

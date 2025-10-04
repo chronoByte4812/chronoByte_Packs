@@ -3,6 +3,7 @@ import { commandBuild } from './classes/commandBuilder.js';
 import { config } from './config.js';
 import { waitMove } from './utils/waitMove.js';
 import '../commands/commandsImport.js';
+import { serverBuild } from './classes/serverBuilder.js';
 
 world.beforeEvents.chatSend.subscribe((data) => {
     if (!data.message.startsWith(config.prefix) || data.message === config.prefix) return; data.cancel = true;
@@ -12,8 +13,9 @@ world.beforeEvents.chatSend.subscribe((data) => {
     const cmd = args.shift();
     const command = commandBuild.getCommand(cmd);
 
-    if (config.debugMode && sender.hasTag('devstatus')) {
-        console.warn(`Player ${sender.nameTag}, Cmd ${cmd} does ${command !== undefined ? '' : 'not '}exists, Args ${args.join(', ')}`);
+    if (config.debugMode) {
+        // console.warn(`Player ${sender.nameTag}, Cmd ${cmd} does ${command !== undefined ? '' : 'not '}exists, Args ${args.join(', ')}`);
+        serverBuild.msgDevs(`Player ${sender.nameTag}, Cmd ${cmd} does ${command !== undefined ? '' : 'not '}exists, Args ${args.join(', ')}`)
     };
 
     if (!command)

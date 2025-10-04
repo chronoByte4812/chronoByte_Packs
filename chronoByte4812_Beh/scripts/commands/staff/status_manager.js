@@ -1,3 +1,4 @@
+
 import { commandBuild } from '../core/classes/commandBuilder.js'
 import { config } from "../core/config.js";
 
@@ -9,11 +10,11 @@ commandBuild.register(
         usage: [
             'status',
             'status list @player'
-          //...
+            //...
         ],
         aliases: [],
         examples: [
-            'status add @player <tag id'
+            'status add @player <tag id>',
             'status list @player'
         ]
     },
@@ -23,9 +24,8 @@ commandBuild.register(
         let text = [];
 
         if (args.length < 1) {
-        
+
         };
-   }; 
 
         sender.sendMessage(text.join('§r\n'))
     },

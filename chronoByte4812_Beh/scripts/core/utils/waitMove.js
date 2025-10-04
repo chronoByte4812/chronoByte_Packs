@@ -9,12 +9,14 @@ import { serverBuild } from "../classes/serverBuilder.js";
  */
 export function waitMove(player, callbackWM) {
     const map = new Map();
-    const debugMode = config.debugMode;
+
+    // Annoying  waitMove crap off now.
+    const debugMode = false;//config.debugMode;
 
     map.set(player, [player.location.x, player.location.y, player.location.z]);
 
-    if (debugMode && player.hasTag('devstatus')) {
-        console.warn(`Player ${player.nameTag} is now awaiting movement waitMove()`);
+    if (debugMode) {
+        // console.warn(`Player ${player.nameTag} is now awaiting movement waitMove()`);
         serverBuild.msgDevs(`Player ${player.nameTag} is now awaiting movement waitMove()`);
     };
 
@@ -27,8 +29,9 @@ export function waitMove(player, callbackWM) {
                 map.delete(oldPlayer);
                 system.clearRun(runId);
 
-                if (debugMode && player.hasTag('devstatus')) {
-                    console.warn(`Player ${player.nameTag} finished waitMove()`);
+                if (debugMode) {
+                    // console.warn(`Player ${player.nameTag} finished waitMove()`);
+                    serverBuild.msgDevs(`Player ${player.nameTag} finished waitMove()`);
                 };
             };
         };
