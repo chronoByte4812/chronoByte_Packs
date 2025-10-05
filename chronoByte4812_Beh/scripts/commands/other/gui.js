@@ -16,6 +16,8 @@ function uiTypeToString(uiType) {
     else if (uiType === 1)
         return 'staff';
     else if (uiType === 2)
+        return 'dev';
+    else if (uiType === 3)
         return 'nonstaff';
 };
 
@@ -387,21 +389,23 @@ commandBuild.register(
         ]
     },
     (data, args) => {
-        const sender= data.sender;
+        const sender = data.sender;
 
         if (args[1]) sender.sendMessage('Hey you used a 2nd argument, cool!');
 
         sender.sendMessage('§aMove to show the UI!');
     },
     (data, args) => {
-        const sender= data.sender;
+        const sender = data.sender;
         const isStaff = sender.hasTag(config.staffTag);
+        const isDev = sender.hasTag(config.devTag);
 
         /**
          * Describes what menu to use.
          * 0 = Welcome,
          * 1 = Staff,
-         * 2 = Nonstaff
+         * 2 = dev
+         * 3 = nonstaff (player)
          * @type {Number}
          */
         let uiType = 0;
@@ -413,8 +417,10 @@ commandBuild.register(
             uiType = 0;
         else if (isStaff && !args[0])
             uiType = 1;
-        else
+        else if (isDev  && !args[0])
             uiType = 2;
+        else
+            uiType = 3;
 
         switch (uiType) {
             case 0:
@@ -426,6 +432,10 @@ commandBuild.register(
                 break;
 
             case 2:
+                gui.dev.main(sender);
+                break;
+
+            case 3:
                 gui.player.main(sender);
                 break;
 

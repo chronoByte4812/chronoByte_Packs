@@ -1,3 +1,4 @@
+import { system, SystemAfterEvents, world } from '@minecraft/server';
 import { commandBuild } from '../../core/classes/commandBuilder.js'
 import { serverBuild } from '../../core/classes/serverBuilder.js';
 import { config } from "../../core/config.js";
@@ -27,7 +28,7 @@ commandBuild.register(
             sender.sendMessage(`You must provide a type argument.`);
 
             return;
-        }
+        };
 
         if (message.length < 1) {
             sender.sendMessage('You must provide message arguments.');
