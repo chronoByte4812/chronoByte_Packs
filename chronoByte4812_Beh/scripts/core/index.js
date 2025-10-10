@@ -28,4 +28,4 @@ world.beforeEvents.chatSend.subscribe((data) => {
         command.callback(data, args);
         waitMove(sender, () => command.callbackWM(data, args));
     });
-});//
+});

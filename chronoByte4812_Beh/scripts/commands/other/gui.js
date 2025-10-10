@@ -1,4 +1,4 @@
-import { ActionFormData, ModalFormData } from '@minecraft/server-ui'; // Wrapper to be written to simplify and makwGUI modular
+import { ActionFormData, ModalFormData } from '@minecraft/server-ui';
 import { commandBuild } from '../../core/classes/commandBuilder.js';
 import { Database } from '../../core/classes/databaseBuilder.js';
 import { config } from '../../core/config.js';
@@ -15,8 +15,8 @@ function uiTypeToString(uiType) {
         return 'welcome';
     else if (uiType === 1)
         return 'staff';
-    else if (uiType === 2)
-        return 'dev';
+    // else if (uiType === 2)
+    //     return 'dev';
     else if (uiType === 3)
         return 'nonstaff';
 };
@@ -176,6 +176,31 @@ function setPlayerStatus(sender, target, tag, newValue) {
 };
 
 export const gui = {
+    welcome: {
+        /**
+         * - The welcome UI
+         * @param {import('@minecraft/server').Player} sender
+         */
+        main: (sender) => {
+            const guiMainStaff = new ActionFormData();
+            let text = [];
+
+            guiMainStaff.title('Welcome UI');
+
+            text.push('A');
+
+            guiMainStaff.body(text.join('\n§r'));
+            guiMainStaff.button('Close');
+            guiMainStaff.show(sender).then((result) => {
+                if (result.canceled) return;
+
+                // if (result.selection === 0)
+                //     return gui.player.main(sender);
+
+                sender.addTag('welcome');
+            });
+        }
+    },
     staff: {
         /**
          * - The main staff UI
@@ -415,9 +440,9 @@ commandBuild.register(
 
         if (sender.hasTag('welcome'))
             uiType = 0;
-        else if (isStaff && !args[0])
+        else if (isStaff)
             uiType = 1;
-        else if (isDev  && !args[0])
+        else if (isDev)
             uiType = 2;
         else
             uiType = 3;
@@ -431,9 +456,9 @@ commandBuild.register(
                 gui.staff.main(sender);
                 break;
 
-            case 2:
-                gui.dev.main(sender);
-                break;
+            // case 2:
+            //     gui.dev.main(sender);
+            //     break;
 
             case 3:
                 gui.player.main(sender);
