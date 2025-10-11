@@ -80,12 +80,13 @@ export const generalModules = [
 
 export const selfModules = [
     {
-        name: 'Something',
-        description: 'Something...',
-        moduleId: 'stdmodule',
+        name: 'Sidebar info',
+        description: '',
+        moduleId: 'sbmtoggle',
         toggleValues: [
             '§cOff',
-            '§aOn'
+            '§bServer info',
+            '§dSelf info',
         ]
     },
     // {
@@ -217,6 +218,7 @@ export const gui = {
             guiMainStaff.body(text.join('\n§r'));
             guiMainStaff.button('Modules');
             guiMainStaff.button('Status Manager');
+            guiMainStaff.button('Self nonstaff menu');
             guiMainStaff.show(sender).then((result) => {
                 if (result.canceled) return;
 
@@ -224,6 +226,8 @@ export const gui = {
                     return gui.staff.modulesSelector(sender);
                 else if (result.selection === 1)
                     return gui.staff.statusManagerSelector(sender);
+                else if (result.selection === 2)
+                    return gui.player.main(sender);
             });
         },
 

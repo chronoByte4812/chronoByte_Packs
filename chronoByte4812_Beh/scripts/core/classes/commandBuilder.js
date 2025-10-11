@@ -24,7 +24,7 @@ class commandBuilder {
     };
 
     /**
-     * register a new command to be registered
+     * Register a new command
      * @param {Object} info - The commands info
      * @param {string} [info.name] - Name of the command
      * @param {string} [info.description] - Description of the command

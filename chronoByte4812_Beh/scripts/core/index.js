@@ -1,9 +1,9 @@
 import { system, world } from '@minecraft/server';
+import '../commands/commandsImport.js';
 import { commandBuild } from './classes/commandBuilder.js';
+import { serverBuild } from './classes/serverBuilder.js';
 import { config } from './config.js';
 import { waitMove } from './utils/waitMove.js';
-import '../commands/commandsImport.js';
-import { serverBuild } from './classes/serverBuilder.js';
 
 world.beforeEvents.chatSend.subscribe((data) => {
     if (!data.message.startsWith(config.prefix) || data.message === config.prefix) return; data.cancel = true;
@@ -15,12 +15,12 @@ world.beforeEvents.chatSend.subscribe((data) => {
 
     if (config.debugMode) {
         // console.warn(`Player ${sender.nameTag}, Cmd ${cmd} does ${command !== undefined ? '' : 'not '}exists, Args ${args.join(', ')}`);
-        serverBuild.msgDevs(`Player ${sender.nameTag}, Cmd ${cmd} does ${command !== undefined ? '' : 'not '}exists, Args ${args.join(', ')}`)
+        serverBuild.msgDevs(`${sender.nameTag}, ${cmd}, ${cmd ?? 'doesn\'t exist'}`);
     };
 
     if (!command)
         return sender.sendMessage(`§cThe command §f${cmd}§c was not found`);
-    
+
     if (command.for_staff === true && sender.hasTag(config.staffTag) === false)
         return sender.sendMessage(`§cThe command §f${cmd}§c is for staff only`);
 
