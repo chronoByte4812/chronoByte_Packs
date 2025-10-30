@@ -12,12 +12,12 @@
 		"min_engine_version": [
 			1,
 			21,
-			111
+			120
 		]
 	},
 	"modules": [
 		{
-			"description": "",
+			"description": "Resource module",
 			"type": "resources",
 			"uuid": "ae4817c3-2b24-4484-afdd-e6d09e739f97",
 			"version": [
